@@ -1,0 +1,106 @@
+type User @model {
+  id: ID! @isUnique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+
+  name: String
+  email: String
+  username: String @isUnique
+  passwordHash: String
+
+  organization: Organization! @relation(name: "OrganizationUsers")
+}
+
+type Organization @model {
+  id: ID! @isUnique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+
+  name: String
+  email: String
+  phoneNumber: String
+  address: String
+
+  members: [User!]! @relation(name: "OrganizationUsers")
+  dataSupplier: DataQualityProject @relation(name: "DataSupplierOrganization")
+  dataConsumer: DataQualityProject @relation(name: "DataConsumerOrganization")
+}
+
+type DataQualityProject @model {
+  id: ID! @isUnique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+
+  name: String
+
+  dataSupplier: Organization! @relation(name: "DataSupplierOrganization")
+  dataConsumer: Organization! @relation(name: "DataConsumerOrganization")
+  initiation: Initiation @relation(name: "DataQualityProjectInitiationStep")
+  agreement: Agreement @relation(name: "DataQualityProjectAgreementStep")
+}
+
+type Initiation @model {
+  id: ID! @isUnique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+
+  dataSupplierMasterDataStructure: String
+  dataConsumerMasterDataStructure: String
+
+  dataQualityProject: DataQualityProject @relation(name: "DataQualityProjectInitiationStep")
+}
+
+type Agreement @model {
+  id: ID! @isUnique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+
+  revision: String
+  revisionTag: String
+
+  dataConsumerAttributes: [MasterDataAttribute!]! @relation(name: "AgreementsDataConsumerAttributes")
+  dataSupplierAttributes: [MasterDataAttribute!]! @relation(name: "AgreementsDataSupplierAttributes")
+  matches: [MasterDataMatching!]! @relation(name: "AgreementMasterDataMatching")
+  progress: AgreementProgress @relation(name: "AgreementAgreementProgress")
+  dataQualityProject: DataQualityProject @relation(name: "DataQualityProjectAgreementStep")
+}
+
+type AgreementProgress @model {
+  id: ID! @isUnique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+
+  dataConsumer: Int @defaultValue(value: "0")
+  dataSupplier: Int @defaultValue(value: "0")
+
+  agreement: Agreement @relation(name: "AgreementAgreementProgress")
+}
+
+type MasterDataMatching @model {
+  id: ID! @isUnique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+
+  matchCode: Float
+
+  dataConsumerAttribute: MasterDataAttribute @relation(name: "DataConsumerMasterDataMatchingMasterDataAttribute")
+  dataSupplierAttribute: MasterDataAttribute @relation(name: "DataSupplierMasterDataMatchingMasterDataAttribute")
+  matchWanted: Boolean @defaultValue(value: "false")
+  inAgreement: Agreement @relation(name: "AgreementMasterDataMatching")
+}
+
+type MasterDataAttribute @model {
+  id: ID! @isUnique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+
+  label: String
+  type: String
+  maximumLength: String
+  examples: [String!]
+
+  dataConsumer: MasterDataMatching @relation(name: "DataConsumerMasterDataMatchingMasterDataAttribute")
+  dataConsumers: [Agreement!]! @relation(name: "AgreementsDataConsumerAttributes")
+  dataSupplier: MasterDataMatching @relation(name: "DataSupplierMasterDataMatchingMasterDataAttribute")
+  dataSuppliers: [Agreement!]! @relation(name: "AgreementsDataSupplierAttributes")
+}

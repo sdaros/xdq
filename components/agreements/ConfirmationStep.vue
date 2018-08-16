@@ -252,6 +252,7 @@ export default {
   data () {
     return {
       current: 0,
+      loading: false,
       dataQualityAgreement: ''
     }
   },
@@ -269,6 +270,7 @@ export default {
       }
     },
     async generate () {
+      this.loading = true
       try {
         let result = await this.$store.dispatch('agreements/generateDataQualityAgreement', this.id)
         let dqa = yaml.dump(result)
@@ -277,6 +279,7 @@ export default {
       } catch (e) {
         console.log(e)
       }
+      this.loading = false
     }
   },
   computed: {

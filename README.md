@@ -1,6 +1,5 @@
-# xdq
+# The Exchange Platform for Data Quality
 
-> xDQ - Data Quality
 
 ## Build Setup
 

@@ -377,3 +377,5 @@ router.post('/agreements/:id/matches', async function (req, res, next) {
   console.log('matchings: ' + JSON.stringify(matchings, null, 2))
   res.json({status: 200})
 })
+
+module.exports = router

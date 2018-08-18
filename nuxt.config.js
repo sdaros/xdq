@@ -47,7 +47,7 @@ module.exports = {
     '@nuxtjs/apollo'
   ],
   axios: {
-    baseURL: 'https://xdq.herokuapp.com'
+    baseURL: 'http://xdq.herokuapp.com'
   },
   apollo: {
     clientConfigs: {
